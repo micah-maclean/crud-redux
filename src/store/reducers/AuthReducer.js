@@ -1,16 +1,22 @@
-import { apiDBC } from "../../api";
-
 const INITIAL_STATE = {
-    token: `${localStorage.getItem('token') ? localStorage.getItem('token') : ''}`
+    token: '',
+    isLoading:  true
 }
 
 function AuthReducer(state = INITIAL_STATE, action) {
-    apiDBC.defaults.headers.common['Authorization'] = state.token;
     switch(action.type){
         case 'SET_TOKEN':
-            return { token: action.data };
+            return { 
+                token: action.token,
+                isLoading: false
+             };
         case 'DELETE_TOKEN':
             return { token: null };
+        case 'SET_LOADING':
+                return { 
+                    ...state,
+                    isLoading: false
+                 };
         default:
             return state;
     }

@@ -1,22 +1,25 @@
 import { apiDBC } from "../../api";
 
 
-export async function getPeople(){
+export async function getPeople(dispatch){
     try {
         const {data} = await apiDBC.get('/pessoa/lista-completa');
-        return{
+        dispatch({
             type: 'SET_PEOPLE',
-            data
-        }
+            people: data
+        }) 
     } catch (error) {
         console.log(error);
     }
 }
 
-export async function getPersonById(id){
+export async function getPersonById(id, dispatch){
     try {
-        await apiDBC.delete(`/pessoa/${id}`);
-        getPeople();
+        const {data} = await apiDBC.get(`/pessoa/lista-completa?idPessoa=${id}`);
+        dispatch({ 
+            type: 'SET_PERSON',
+            person: data[0]
+        })
     } catch (error) {
         console.log(error);
     }
@@ -26,7 +29,6 @@ export async function handleCreatePerson(values){
     try {
         await apiDBC.post('/pessoa', values);
         alert('Pessoa cadastrada com sucesso');
-        getPeople();
     } catch (error) {
         console.log(error);
     }
@@ -36,7 +38,6 @@ export async function handleUpdatePerson(id, values){
     try {
         await apiDBC.put(`/pessoa/${id}`, values);
         alert('Pessoa editada com sucesso');
-        getPeople();
     } catch (error) {
         console.log(error);
     }
@@ -45,7 +46,6 @@ export async function handleUpdatePerson(id, values){
 export async function handleDeletePerson(id){
     try {
         await apiDBC.delete(`/pessoa/${id}`);
-        getPeople();
     } catch (error) {
         console.log(error);
     }

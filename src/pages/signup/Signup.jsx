@@ -1,8 +1,11 @@
 import { Field, Form, Formik } from "formik";
-import { connect } from "react-redux"
+import { useNavigate } from "react-router-dom";
+import { connect } from "react-redux";
 
 import { handleSignup } from "../../store/actions/AuthAction";
 function Signup() {
+    const navigate = useNavigate();
+
   return (
     <div>
         <h1>Signup</h1>
@@ -12,7 +15,7 @@ function Signup() {
                 senha: ''
             }}
             onSubmit={(values, action) => {
-                handleSignup(values);
+                handleSignup(values, navigate);
                 action.resetForm({values: ''})
             }}
         >

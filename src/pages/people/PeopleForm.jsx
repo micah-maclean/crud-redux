@@ -2,54 +2,61 @@ import { Field, Form, Formik } from "formik"
 import { useEffect, useState } from "react";
 import { useParams } from 'react-router-dom';
 import { connect } from "react-redux";
-import { handleCreatePerson, handleUpdatePerson } from "../../store/actions/PeopleAction";
+import { getPersonById, handleCreatePerson, handleUpdatePerson } from "../../store/actions/PeopleAction";
+import { CustomForm } from "../../components/customForm/CustomForm";
+import { Container } from "../../components/container/container";
+import Loading from "../../components/loading/Loading";
+import { Button } from "../../components/button/Button";
 
-function PeopleForm({handleCreate, handleUpdate}) {
+function PeopleForm({person, dispatch}) {
     const [isEditing, setIsEditing] = useState(false);
     const {id} = useParams();
     useEffect(() => {
         if(id){
             setIsEditing(true);
-        }
-        
+            getPersonById(id, dispatch)
+        }  
     }, [])
+
+
   return (
-    <div>
-        <h1>{ isEditing ? 'Editar Pessoa' : 'Adicionar Pessoa' }</h1>
-        <Formik 
-        initialValues={{
-            nome: '',
-            cpf: '',
-            dataNascimento: '',
-            email:'',
-        }}
-        onSubmit={(values, action) => {
-            isEditing ? handleUpdate() : handleCreate(values);
-            action.resetForm({values: ''});
-        }}>
-            <Form>
-                <label htmlFor='nome'>Nome</label>
-                <Field name='nome' placeholder='Nome'/>
+    <Container padding='30px' backgroundColor='#F7F8FC' height='calc(100vh - 64px)'>
+            <Formik 
+            initialValues={{
+                nome: person ? person.nome : '',
+                cpf: person ? person.cpf : '',
+                dataNascimento: person ? person.dataNascimento : '',
+                email: person ? person.email : '',
+            }}
+            enableReinitialize
+            onSubmit={(values, action) => {
+                isEditing ? handleUpdatePerson(id, values) : handleCreatePerson(values);
+                action.resetForm({values: ''});
+            }}>
+                <CustomForm>
+                    <h1>{ isEditing ? 'Atualizar Pessoa' : 'Adicionar Pessoa' }</h1>
 
-                <label htmlFor='cpf'>CPF</label>
-                <Field name='cpf' placeholder='CPF'/>
+                    <label htmlFor='nome'>Nome*</label>
+                    <Field name='nome' placeholder='Nome'/>
 
-                <label htmlFor='dataNascimento'>Data de Nascimento</label>
-                <Field name='dataNascimento' placeholder='Data de Nascimento'/>
+                    <label htmlFor='cpf'>CPF*</label>
+                    <Field name='cpf' placeholder='CPF'/>
 
-                <label htmlFor='email'>Email</label>
-                <Field name='email' placeholder='Email'/>
+                    <label htmlFor='dataNascimento'>Data de Nascimento*</label>
+                    <Field name='dataNascimento' placeholder='Data de Nascimento'/>
 
-                <button type='submit'>{ isEditing ? 'Editar' : 'Adicionar' }</button>
-            </Form>
-        </Formik>
-    </div>
+                    <label htmlFor='email'>Email*</label>
+                    <Field name='email' placeholder='Email'/>
+
+                    <Button type='submit'>{ isEditing ? 'Atualizar' : 'Adicionar' }</Button>
+                </CustomForm>
+            </Formik>
+    </Container>
   )
 }
 
-const mapDispatchToProp = dispatch => ({
-    handleUpdate: (id, values) => dispatch(handleUpdatePerson(id, values)),
-    handleCreate: (values) => dispatch(handleCreatePerson(values))
+const mapStateToProps = state => ({
+    person: state.PeopleReducer.person
 })
 
-export default connect(mapDispatchToProp)(PeopleForm)
+export default connect(mapStateToProps)(PeopleForm)
