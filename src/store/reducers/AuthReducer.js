@@ -15,7 +15,7 @@ function AuthReducer(state = INITIAL_STATE, action) {
         case 'SET_LOADING':
                 return { 
                     ...state,
-                    isLoading: false
+                    isLoading: action.isLoading
                  };
         default:
             return state;

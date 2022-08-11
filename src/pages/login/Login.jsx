@@ -1,36 +1,54 @@
 import { Field, Form, Formik } from "formik";
+import { useEffect } from "react";
 import { connect } from "react-redux"
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import { Button } from "../../components/button/Button";
+import { Container } from "../../components/container/container";
+import { CustomForm } from "../../components/customForm/CustomForm";
 
 import { handleLogin } from "../../store/actions/AuthAction";
-function Login({dispatch}) {
+function Login({token, dispatch}) {
     const navigate= useNavigate();
 
+    useEffect(()=>{
+        if(token){
+            navigate('/')
+        }
+    },[])
+    
     return (
-        <div>
-            <h1>Login</h1>
+        <Container backgroundColor='#363740' height='100vh' justifyContent='center' alignItems='center'>
+            
             <Formik
                 initialValues={{
                     login: '',
                     senha: ''
                 }}
-                onSubmit={(values, action) => {
-                    handleLogin(values, dispatch, navigate);
-                    action.resetForm({values: ''})
+                onSubmit={(values, {resetForm}) => {
+                    handleLogin(values, dispatch, navigate, resetForm);
                 }}
             >
-                <Form>
+                <CustomForm width='400px'>
+                    <h2>Login</h2>
+
                     <label htmlFor='login'>Login</label>
                     <Field name='login' placeholder='Login'/>
 
                     <label htmlFor='senha'>Senha</label>
                     <Field name='senha' placeholder='Senha' type='password'/>   
                     
-                    <button type='submit'>Login</button>
-                </Form>
+                    <Button width='100%' type='submit'>Login</Button>
+
+                    <p>Don't have an account? <Link to='/signup'>Sign up</Link></p>
+                </CustomForm>
             </Formik>
-        </div>
+        </Container>
     )
 }
 
-export default connect()(Login); 
+
+const mapStateToProps = state => ({
+    token: state.AuthReducer.token
+})
+
+export default connect(mapStateToProps)(Login); 

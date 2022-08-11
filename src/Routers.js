@@ -2,6 +2,8 @@ import {BrowserRouter, Routes, Route} from "react-router-dom";
 
 import { useEffect } from "react";
 import {connect} from "react-redux";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import Login from "./pages/login/Login";
 import Signup from "./pages/signup/Signup";
@@ -16,7 +18,9 @@ import NotFound from "./pages/notFound/NotFound";
 import PrivateRoutes from "./PrivateRoutes";
 import { GlobalStyle } from "./GlobalStyle";
 import PersonDetails from "./pages/people/PersonDetails";
-function Routers({isLoading, dispatch}) {
+import Contact from "./pages/contact/Contact";
+import Address from "./pages/address/Address";
+function Routers({isLoading, token, dispatch}) {
   useEffect(() => {
     isAuth(dispatch)
   }, [])
@@ -28,13 +32,21 @@ function Routers({isLoading, dispatch}) {
   return (
     <BrowserRouter>
       <GlobalStyle/>
-      <Header/>
+      {
+        token &&
+        <Header/>
+      }
+      <ToastContainer />
       <Routes>
         <Route element={<PrivateRoutes/>}>
             <Route path="/" element={<People/>}/>
             <Route path="/criar-pessoa" element={<PeopleForm/>}/>
-            <Route path="/pessoa/:id/editar" element={<PeopleForm/>}/>
-            <Route path="/pessoa/:id" element={<PersonDetails/>}/>
+            <Route path="/editar-pessoa/:idPessoa" element={<PeopleForm/>}/>
+            <Route path="/detalhe-pessoa/:idPessoa" element={<PersonDetails/>}/>
+            <Route path="/:idPessoa/criar-endereco/" element={<Address/>}/>
+            <Route path="/:idPessoa/criar-contato/" element={<Contact/>}/>
+            <Route path="/:idPessoa/editar-endereco/:idEndereco" element={<Address/>}/>
+            <Route path="/:idPessoa/editar-contato/:idContato" element={<Contact/>}/>
         </Route>
         <Route path="/login" element={<Login/>}/>
         <Route path="/signup" element={<Signup/>}/>
@@ -45,7 +57,8 @@ function Routers({isLoading, dispatch}) {
 }
 
 const mapStateToProps = state => ({
-    isLoading: state.AuthReducer.isLoading
+    isLoading: state.AuthReducer.isLoading,
+    token: state.AuthReducer.token
 })
 
 

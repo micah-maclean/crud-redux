@@ -1,9 +1,12 @@
 const INITIAL_STATE = {
     people: [],
-    person: {}
+    person: {},
+    contact: {},
+    address: {}
 }
 
 function PeopleReducer(state = INITIAL_STATE, action){
+    console.log(action)
     switch(action.type) {
         case 'SET_PEOPLE':
             return {
@@ -15,9 +18,20 @@ function PeopleReducer(state = INITIAL_STATE, action){
                 ...state,
                 person: action.person
             };
+        case 'SET_ADDRESS':
+            return {
+                ...state,
+                address: action.address
+            };
+        case 'SET_CONTACT':
+            return{
+                ...state,
+                contact: action.contact
+            };
         default:
             return state;
     }
+    
 }
 
 export default PeopleReducer;

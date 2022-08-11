@@ -1,22 +1,24 @@
 import { apiDBC } from "../../api";
+import {toast} from "react-toastify";
 
-export async function handleLogin(values, dispatch, navigate) {
+export async function handleLogin(values, dispatch, navigate, resetForm) {
     try {
         const {data} = await apiDBC.post('/auth', values);
         localStorage.setItem('token', data);
         apiDBC.defaults.headers.common['Authorization'] = data;
         navigate('/');
+        resetForm({values:''})
         dispatch({
             type: 'SET_TOKEN',
             token: data
         })
     } catch (error) {
-        console.log(error);
+        toast.error(error.message);
     }
 }
 
 export function handleLogout(dispatch, navigate) {
-    localStorage.setItem('token', null);
+    localStorage.removeItem('token');
     delete apiDBC.defaults.headers.common['Authorization'];
     navigate('/login');
     dispatch({
@@ -24,13 +26,14 @@ export function handleLogout(dispatch, navigate) {
     });
 }
 
-export async function handleSignup(values, navigate){
+export async function handleSignup(values, navigate, resetForm){
     try {
         await apiDBC.post('/auth/create', values);
-        alert('Usuário cadastrado com sucesso');
         navigate('/login');
+        toast.success('Usuário cadastrado com sucesso');
+        resetForm({values:''});
     } catch (error) {
-        console.log(error);
+        toast.error(error.message);
     }
 }
 

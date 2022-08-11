@@ -5,6 +5,7 @@ import { Button } from "../../components/button/Button";
 import { Container } from "../../components/container/container";
 import { Table } from "../../components/table/Table";
 import { getPeople, handleDeletePerson } from "../../store/actions/PeopleAction";
+import { maskCPF, maskDate } from "../../utils/Masks";
 
 function People({ people, dispatch}) {
   const navigate = useNavigate();
@@ -21,7 +22,7 @@ function People({ people, dispatch}) {
     <Container padding='30px' backgroundColor='#F7F8FC' minHeight='calc(100vh - 64px)'>
         <Container flexDirection='column' height={'fit-content'} padding={'24px 16px'} border={'1px solid #DFE0EB'} borderRadius={'8px'} backgroundColor={'white'}>
             <Container justifyContent='space-between'>
-                <h1>Pessoas</h1>
+                <h2>Pessoas</h2>
                 <Button onClick={() => navigate('/criar-pessoa')}> + Criar Pessoa</Button>
             </Container>
             { people.length > 0 ?
@@ -40,14 +41,14 @@ function People({ people, dispatch}) {
                             people.map( person =>(
                                 <tr key={person.idPessoa}>
                                     <td>{person.nome}</td>
-                                    <td>{person.cpf}</td>
+                                    <td>{maskCPF(person.cpf)}</td>
                                     <td>{person.email}</td>
-                                    <td>{person.dataNascimento}</td>
+                                    <td>{maskDate(person.dataNascimento)}</td>
                                     <td>
                                         <Container  justifyContent={'space-around'}>
-                                            <Button onClick={() => handleDeletePerson(person.idPessoa)}>Deleta</Button>
-                                            <Button onClick={() => navigate(`/pessoa/${person.idPessoa}/editar`)}>Editar</Button>
-                                            <Button onClick={() => navigate(`/pessoa/${person.idPessoa}`)}>Visualizar</Button>
+                                            <Button border={'none'} backgroundColor={'#FEC400'} color={'white'} onClick={() => navigate(`/detalhe-pessoa/${person.idPessoa}`)}>Visualizar</Button>
+                                            <Button border={'none'} backgroundColor={'#3751FF'} color={'white'} onClick={() => navigate(`/editar-pessoa/${person.idPessoa}`)}>Editar</Button>
+                                            <Button border={'none'}  backgroundColor={'#F12B2C'}  color={'white'} onClick={() => handleDeletePerson(person.idPessoa, dispatch)}>Deleta</Button>
                                         </Container>
                                     </td>
                                 </tr>

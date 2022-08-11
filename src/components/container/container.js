@@ -2,6 +2,7 @@ import styled from "styled-components";
 
 export const Container = styled.div`
     display: flex;
+    gap: ${props => props.gap ? props.gap : '0'};
     border: ${ props => props.border ? props.border: 'none'};
     border-radius: ${ props => props.borderRadius ? props.borderRadius: 'none'};
     flex-direction: ${ props => props.flexDirection ? props.flexDirection: 'row'};
